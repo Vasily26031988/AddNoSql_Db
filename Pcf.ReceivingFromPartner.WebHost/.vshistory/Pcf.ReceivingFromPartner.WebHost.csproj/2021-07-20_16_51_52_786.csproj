@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <DockerDefaultTargetOS>Windows</DockerDefaultTargetOS>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Pcf.ReceivingFromPartner.Core\Pcf.ReceivingFromPartner.Core.csproj" />
+      <ProjectReference Include="..\Pcf.ReceivingFromPartner.DataAccess\Pcf.ReceivingFromPartner.DataAccess.csproj" />
+      <ProjectReference Include="..\Pcf.ReceivingFromPartner.Integration\Pcf.ReceivingFromPartner.Integration.csproj" />
+    </ItemGroup>
+
+</Project>
