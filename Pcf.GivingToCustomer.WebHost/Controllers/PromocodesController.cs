@@ -71,11 +71,13 @@ namespace Pcf.GivingToCustomer.WebHost.Controllers
             //  Получаем клиентов с этим предпочтением:
             var customers = await _customersRepository
                 .GetWhere(d => d.Preferences.Any(x =>
-                    x.Preference.Id == preference.Id));
+                    x.Id == preference.Id));
 
             PromoCode promoCode = PromoCodeMapper.MapFromModel(request, preference, customers);
 
             await _promoCodesRepository.AddAsync(promoCode);
+            foreach (var customer in customers)
+                await _customersRepository.UpdateAsync(customer);
 
             return CreatedAtAction(nameof(GetPromocodesAsync), new { }, null);
         }

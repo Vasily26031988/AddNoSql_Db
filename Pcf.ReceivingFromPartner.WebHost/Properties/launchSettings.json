@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "Otus.Teaching.PromocodeFactory.WebHost": {
+    "PromocodeFactory.WebHost": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "swagger/index.html",
@@ -9,7 +9,7 @@
       },
       "applicationUrl": "http://localhost:8092"
     },
-    "Docker": {
+    "Docker (1)": {
       "commandName": "Docker",
       "launchBrowser": true,
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/swagger/index.html",

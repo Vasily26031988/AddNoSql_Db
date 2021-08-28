@@ -1,24 +1,21 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Configuration;
 using Pcf.ReceivingFromPartner.Core.Abstractions.Gateways;
 using Pcf.ReceivingFromPartner.Core.Abstractions.Repositories;
 using Pcf.ReceivingFromPartner.DataAccess;
 using Pcf.ReceivingFromPartner.DataAccess.Data;
 using Pcf.ReceivingFromPartner.DataAccess.Repositories;
 using Pcf.ReceivingFromPartner.Integration;
+using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
 
 namespace Pcf.ReceivingFromPartner.WebHost
 {
-   public class Startup
+    public class Startup
     {
         public IConfiguration Configuration { get; }
 

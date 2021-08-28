@@ -19,8 +19,8 @@ using Xunit;
 namespace Pcf.GivingToCustomer.IntegrationTests.Api.WebHost.Controllers
 {
    public class CustomersControllerTests
-        : IClassFixture<WebApplicationFactory<Startup>> // Postgres
-        // : IClassFixture<TestWebApplicationFactory<Startup>> // SqlLite
+        //: IClassFixture<WebApplicationFactory<Startup>> // Postgres
+        : IClassFixture<TestWebApplicationFactory<Startup>> // SqlLite
     {
         private readonly WebApplicationFactory<Startup> _factory;
         
@@ -107,7 +107,8 @@ namespace Pcf.GivingToCustomer.IntegrationTests.Api.WebHost.Controllers
                         Id = Guid.Parse("76324c47-68d2-472d-abb8-33cfa8cc0c84"),
                         Name = "Дети",                    
                     }
-                }
+                },
+                PromoCodes = new List<PromoCodeShortResponse>()
             };
 
             //Act

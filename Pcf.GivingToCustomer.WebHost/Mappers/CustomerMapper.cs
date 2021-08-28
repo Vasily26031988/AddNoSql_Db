@@ -23,12 +23,7 @@ namespace Pcf.GivingToCustomer.WebHost.Mappers
             customer.LastName = model.LastName;
             customer.Email = model.Email;
 
-            customer.Preferences = preferences.Select(x => new CustomerPreference()
-            {
-                CustomerId = customer.Id,
-                Preference = x,
-                PreferenceId = x.Id
-            }).ToList();
+            customer.Preferences = preferences.ToList();
             
             return customer;
         }

@@ -10,36 +10,27 @@ namespace Pcf.GivingToCustomer.WebHost.Mappers
 {
     public class PromoCodeMapper
     {
-        public static PromoCode MapFromModel(GivePromoCodeRequest request, Preference preference, IEnumerable<Customer> customers) {
-
-            var promocode = new PromoCode();
-            promocode.Id = request.PromoCodeId;
-            
-            promocode.PartnerId = request.PartnerId;
-            promocode.Code = request.PromoCode;
-            promocode.ServiceInfo = request.ServiceInfo;
-           
-            promocode.BeginDate = DateTime.Parse(request.BeginDate);
-            promocode.EndDate = DateTime.Parse(request.EndDate);
-
-            promocode.Preference = preference;
-            promocode.PreferenceId = preference.Id;
-
-            promocode.Customers = new List<PromoCodeCustomer>();
-
-            foreach (var item in customers)
+        public static PromoCode MapFromModel(GivePromoCodeRequest request, Preference preference, IEnumerable<Customer> customers)
+        {
+            var promoCode = new PromoCode
             {
-                promocode.Customers.Add(new PromoCodeCustomer()
-                {
-
-                    CustomerId = item.Id,
-                    Customer = item,
-                    PromoCodeId = promocode.Id,
-                    PromoCode = promocode
-                });
+                Id = request.PromoCodeId,
+                PartnerId = request.PartnerId,
+                Code = request.PromoCode,
+                ServiceInfo = request.ServiceInfo,
+                BeginDate = DateTime.Parse(request.BeginDate),
+                EndDate = DateTime.Parse(request.EndDate),
+                Preference = preference,
+                Customers = customers?
+                    .Select(x => new Customer(x, true))
+                    .ToList()
             };
 
-            return promocode;
+            foreach (var customer in customers)
+            {
+                customer.PromoCodes.Add(new PromoCode(promoCode, true));
+            }
+            return promoCode;
         }
     }
 }

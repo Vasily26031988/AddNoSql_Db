@@ -1,0 +1,12 @@
+﻿<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="receiving-from-partner-api" type="docker-deploy" factoryName="dockerfile" server-name="Docker">
+    <deployment type="dockerfile">
+      <settings>
+        <option name="imageTag" value="receiving-from-partner-api" />
+        <option name="containerName" value="receiving-from-partner-api" />
+        <option name="sourceFilePath" value="Pcf.ReceivingFromPartner.WebHost/Dockerfile" />
+      </settings>
+    </deployment>
+    <method v="2" />
+  </configuration>
+</component>

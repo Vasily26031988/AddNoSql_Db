@@ -40,8 +40,8 @@ namespace Pcf.GivingToCustomer.Core.Domain
 
         public Guid PartnerId { get; set; }
         
-        public virtual Preference Preference { get; set; }
+        public Preference Preference { get; set; }
 
-       public virtual ICollection<Customer> Customers { get; set; }
+       public ICollection<Customer> Customers { get; set; }
     }
 }

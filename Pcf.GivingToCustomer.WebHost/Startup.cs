@@ -1,20 +1,19 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Serializers;
+using MongoDB.Driver;
 using Pcf.GivingToCustomer.Core.Abstractions.Gateways;
 using Pcf.GivingToCustomer.Core.Abstractions.Repositories;
-using Pcf.GivingToCustomer.DataAccess;
+using Pcf.GivingToCustomer.Core.Domain;
 using Pcf.GivingToCustomer.DataAccess.Data;
 using Pcf.GivingToCustomer.DataAccess.Repositories;
 using Pcf.GivingToCustomer.Integration;
+using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
 
 namespace Pcf.GivingToCustomer.WebHost
 {
@@ -31,18 +30,29 @@ namespace Pcf.GivingToCustomer.WebHost
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers().AddMvcOptions(x=> 
-                x.SuppressAsyncSuffixInActionNames = false);
-            services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
-            services.AddScoped<INotificationGateway, NotificationGateway>();
-            services.AddScoped<IDbInitializer, EfDbInitializer>();
-            services.AddDbContext<DataContext>(x =>
-            {
-                //x.UseSqlite("Filename=PromocodeFactoryGivingToCustomerDb.sqlite");
-                x.UseNpgsql(Configuration.GetConnectionString("PromocodeFactoryGivingToCustomerDb"));
-                x.UseSnakeCaseNamingConvention();
-                x.UseLazyLoadingProxies();
-            });
+            services
+                .AddSingleton<IMongoClient>(_ =>
+                    new MongoClient(Configuration["MongoDb:ConnectionString"]))
+                .AddSingleton(serviceProvider =>
+                    serviceProvider.GetRequiredService<IMongoClient>()
+                        .GetDatabase(Configuration["MongoDb:Database"]))
+                .AddSingleton(serviceProvider =>
+                    serviceProvider.GetRequiredService<IMongoDatabase>()
+                        .GetCollection<Preference>("preferences"))
+                .AddSingleton(serviceProvider =>
+                    serviceProvider.GetRequiredService<IMongoDatabase>()
+                        .GetCollection<Customer>("customers"))
+                .AddSingleton(serviceProvider =>
+                    serviceProvider.GetRequiredService<IMongoDatabase>()
+                        .GetCollection<PromoCode>("promocodes"))
+                .AddScoped(serviceProvider =>
+                    serviceProvider.GetRequiredService<IMongoClient>()
+                        .StartSession())
+                .AddScoped(typeof(IRepository<>), typeof(MongoRepository<>))
+                .AddScoped<IDbInitializer, MongoDbInitializer>()
+                .AddScoped<INotificationGateway, NotificationGateway>()
+                .AddControllers()
+                    .AddMvcOptions(x => x.SuppressAsyncSuffixInActionNames = false);
 
             services.AddOpenApiDocument(options =>
             {
@@ -52,7 +62,7 @@ namespace Pcf.GivingToCustomer.WebHost
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IDbInitializer dbInitializer)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IDbInitializer dbInitializer, ILogger<Startup> logger)
         {
             if (env.IsDevelopment())
             {
@@ -78,6 +88,14 @@ namespace Pcf.GivingToCustomer.WebHost
                 endpoints.MapControllers();
             });
             
+            try
+            {
+                BsonSerializer.RegisterSerializer(new GuidSerializer(BsonType.String));
+            }
+            catch (BsonSerializationException ex)
+            {
+                logger.LogWarning(ex.Message);
+            }
             dbInitializer.InitializeDb();
         }
     }

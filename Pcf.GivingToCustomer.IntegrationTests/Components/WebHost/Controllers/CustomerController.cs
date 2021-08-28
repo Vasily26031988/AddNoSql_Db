@@ -13,17 +13,18 @@ using Xunit;
 
 namespace Pcf.GivingToCustomer.IntegrationTests.Components.WebHost.Controllers
 {
-    [Collection(EfDatabaseCollection.DbCollection)]
-    public class CustomersControllerTests: IClassFixture<EfDatabaseFixture>
+   public class CustomersControllerTests: IClassFixture<MongoDatabaseFixture>
     {
         private readonly CustomersController _customersController;
-        private readonly EfRepository<Customer> _customerRepository;
-        private readonly EfRepository<Preference> _preferenceRepository;
+        private readonly MongoRepository<Customer> _customerRepository;
+        private readonly MongoRepository<Preference> _preferenceRepository;
         
-        public CustomersControllerTests(EfDatabaseFixture efDatabaseFixture)
+        public CustomersControllerTests(MongoDatabaseFixture databaseFixture)
         {
-            _customerRepository = new EfRepository<Customer>(efDatabaseFixture.DbContext);
-            _preferenceRepository = new EfRepository<Preference>(efDatabaseFixture.DbContext);
+            _customerRepository = new MongoRepository<Customer>(
+                databaseFixture.CustomerCollection, databaseFixture.MongoSession);
+            _preferenceRepository = new MongoRepository<Preference>(
+                databaseFixture.PreferenceCollection, databaseFixture.MongoSession);
             
             _customersController = new CustomersController(
                 _customerRepository, 
@@ -60,7 +61,7 @@ namespace Pcf.GivingToCustomer.IntegrationTests.Components.WebHost.Controllers
             actual.Preferences.Should()
                 .ContainSingle()
                 .And
-                .Contain(x => x.PreferenceId == preferenceId);
+                .Contain(x => x.Id == preferenceId);
         }
     }
 }

@@ -25,6 +25,28 @@ namespace Pcf.GivingToCustomer.IntegrationTests
             builder.ConfigureServices(services =>
             {
                 services.AddScoped<INotificationGateway, FakeNotificationGateway>();
+                /*
+                var sp = services.BuildServiceProvider();
+
+                using var scope = sp.CreateScope();
+                var scopedServices = scope.ServiceProvider;
+                var preferenceCollection = scopedServices.GetRequiredService<IMongoCollection<Preference>>();
+                var customerCollection = scopedServices.GetRequiredService<IMongoCollection<Customer>>();
+                var promoCodeCollection = scopedServices.GetRequiredService<IMongoCollection<PromoCode>>();
+                var logger = scopedServices
+                    .GetRequiredService<ILogger<TestWebApplicationFactory<TStartup>>>();
+                
+                try
+                {
+                    new MongoTestDbInitializer(preferenceCollection, customerCollection, promoCodeCollection)
+                        .InitializeDb();
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, "Проблема во время заполнения тестовой базы. " +
+                                        "Ошибка: {Message}", ex.Message);
+                }
+                */
             });
         }
     }

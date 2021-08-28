@@ -1,11 +1,14 @@
-﻿FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS base
+﻿FROM mcr.microsoft.com/dotnet/aspnet:3.1 AS base
 WORKDIR /app
 EXPOSE 80
-EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:3.1 AS build
 WORKDIR /src
 COPY ["Pcf.GivingToCustomer.WebHost/Pcf.GivingToCustomer.WebHost.csproj", "Pcf.GivingToCustomer.WebHost/"]
+COPY ["Pcf.GivingToCustomer.Core/Pcf.GivingToCustomer.Core.csproj", "Pcf.GivingToCustomer.Core/"]
+COPY ["Pcf.GivingToCustomer.DataAccess/Pcf.GivingToCustomer.DataAccess.csproj", "Pcf.GivingToCustomer.DataAccess/"]
+COPY ["Pcf.GivingToCustomer.IntegrationTests/Pcf.GivingToCustomer.IntegrationTests.csproj", "Pcf.GivingToCustomer.IntegrationTests/"]
+COPY ["Pcf.GivingToCustomer.Integration/Pcf.GivingToCustomer.Integration.csproj", "Pcf.GivingToCustomer.Integration/"]
 RUN dotnet restore "Pcf.GivingToCustomer.WebHost/Pcf.GivingToCustomer.WebHost.csproj"
 COPY . .
 WORKDIR "/src/Pcf.GivingToCustomer.WebHost"

@@ -14,11 +14,12 @@ using Pcf.Administration.Core.Abstractions;
 using Pcf.Administration.DataAccess;
 using Pcf.Administration.DataAccess.Data;
 using Pcf.Administration.DataAccess.Repositories;
+using Pcf.Administration.Core.Domain.Administration;
 using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
 
 namespace Pcf.Administration.WebHost
 {
-   public class Startup
+    public class Startup
     {
         public IConfiguration Configuration { get; }
 
